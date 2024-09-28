@@ -209,8 +209,8 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
     max_depth = -1L,
     min_gain_to_split = 0.0,
     min_sum_hessian_in_leaf = 0.001,
-  ##  lambda_l1 = 0.0,
-  ##  lambda_l2 = 0.0,
+    #lambda_l1 = 0.0,
+   # lambda_l2 = 0.0,
 
     pos_bagging_fraction = 1.0,
     neg_bagging_fraction = 1.0,
@@ -322,11 +322,11 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
     feature_pre_filter = FALSE,
     force_row_wise = TRUE, # para reducir warnings
     verbosity = -100,
-    max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
+    #max_depth = -1L, # -1 significa no limitar,  por ahora lo dejo fijo
     min_gain_to_split = 0.0, # min_gain_to_split >= 0.0
     min_sum_hessian_in_leaf = 0.001, #  min_sum_hessian_in_leaf >= 0.0
-    lambda_l1 = 0.0, # lambda_l1 >= 0.0
-    lambda_l2 = 0.0, # lambda_l2 >= 0.0
+   # lambda_l1 = 0.0, # lambda_l1 >= 0.0
+    #lambda_l2 = 0.0, # lambda_l2 >= 0.0
     max_bin = 31L, # lo debo dejar fijo, no participa de la BO
     num_iterations = 9999, # un numero muy grande, lo limita early_stopping_rounds
 
@@ -342,10 +342,14 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
 
     extra_trees = FALSE,
     # Parte variable
-    learning_rate = c( 0.02, 0.3 ),
-    feature_fraction = c( 0.5, 0.9 ),
-    num_leaves = c( 8L, 2048L,  "integer" ),
-    min_data_in_leaf = c( 20L, 2000L, "integer" )
+    learning_rate = c( 0.01, 0.1 ),
+    #feature_fraction = c( 0.5, 0.9 ),
+    num_leaves = c( 31L, 255L,  "integer" ),
+    min_data_in_leaf = c( 100L, 500L, "integer" ),
+   lambda_l1= c(0.0, 1.0),
+   lambda_l2= c(0.0, 1.0),
+    max_depth = c(3L, 10L),
+    
   )
 
 
