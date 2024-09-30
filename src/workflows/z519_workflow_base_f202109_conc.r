@@ -216,9 +216,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
 
   #pos_bagging_fraction = 1.0,
 
-  #n_estimators = c(100, 1000),
-  #max_delta_step = c(0, 10),
-  
+
   
   
     neg_bagging_fraction = 1.0,
@@ -358,11 +356,10 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
   lambda_l2 = c(0.0, 1.0),
   feature_fraction = c(0.6, 1.0),
   bagging_fraction = c(0.5, 1.0),
-  bagging_freq = c(1, 5),
+ # bagging_freq = c(1, 5),
   min_gain_to_split = c(0.0, 0.1),
-  min_sum_hessian_in_leaf = c(0.001, 0.1),
-n_estimators = c(100, 1000),
-  max_delta_step = c(0, 10)
+  min_sum_hessian_in_leaf = c(0.001, 0.1)
+
   )
   
   
