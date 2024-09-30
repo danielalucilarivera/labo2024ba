@@ -195,7 +195,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
     # para que LightGBM emule Random Forest
     boosting = "rf",
     bagging_fraction = ( 1.0 - 1.0/exp(1.0) ),
-  ##bagging_freq = 1.0,
+ 
     feature_fraction = 1.0,
 
     # genericos de LightGBM
@@ -215,7 +215,7 @@ FErf_attributes_base <- function( pinputexps, ratio, desvio)
   
 
   #pos_bagging_fraction = 1.0,
-  #bagging_freq= 1.0,
+
   #n_estimators = c(100, 1000),
   #max_delta_step = c(0, 10),
   
@@ -361,9 +361,10 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
   bagging_freq = c(1, 5),
   min_gain_to_split = c(0.0, 0.1),
   min_sum_hessian_in_leaf = c(0.001, 0.1),
-  n_estimators = c(100, 1000),
+n_estimators = c(100, 1000),
   max_delta_step = c(0, 10)
   )
+  
   
   # una Bayesian humilde, pero no descabellada
   param_local$bo_iteraciones <- 100 # iteraciones de la Optimizacion Bayesiana
