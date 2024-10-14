@@ -348,23 +348,19 @@ HT_tuning_base <- function( pinputexps, bypass=FALSE)
     
     # Parte variable
   
-  learning_rate = c(0.001, 0.15),
-  max_depth = c(3, 100),  # Elimina el "integer", ya no es necesario
-  num_leaves = c(20, 2048),
-  min_data_in_leaf = c(1, 110),
-  lambda_l1 = c(0.0, 1.0),
-  lambda_l2 = c(0.0, 1.0),
-  feature_fraction = c(0.6, 1.0),
-  bagging_fraction = c(0.5, 1.0),
- # bagging_freq = c(1, 5),
-  min_gain_to_split = c(0.0, 0.1),
-  min_sum_hessian_in_leaf = c(0.001, 0.1)
+   learning_rate = c(0.001, 0.15),
+   max_depth = c(3, 100,"integer"),
+   num_leaves = c(20, 2048, "integer"),
+   min_data_in_leaf = c(10, 110,"integer"),
+   lambda_l1 = c(0.0, 1.0),
+   lambda_l2 = c(0.0, 1.0)
+ 
 
   )
   
   
   # una Bayesian humilde, pero no descabellada
-  param_local$bo_iteraciones <- 100 # iteraciones de la Optimizacion Bayesiana
+  param_local$bo_iteraciones <- 150 # iteraciones de la Optimizacion Bayesiana
   return( exp_correr_script( param_local ) ) # linea fija
 }
 #------------------------------------------------------------------------------
