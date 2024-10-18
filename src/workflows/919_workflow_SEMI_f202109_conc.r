@@ -478,7 +478,7 @@ wf_SEMI_sep <- function( pnombrewf )
     repeticiones_exp = 1 )
   
   SC_scoring_semillerio( c(fm, ts9) )
-  #KA_evaluate_kaggle_semillerio()
+  KA_evaluate_kaggle_semillerio()
 
   return( exp_wf_end() ) # linea fija
 }
