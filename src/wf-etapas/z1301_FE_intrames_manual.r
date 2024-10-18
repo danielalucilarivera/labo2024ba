@@ -208,7 +208,35 @@ AgregarVariables_IntraMes <- function(dataset) {
     dataset[, vmr_mpagominimo := vm_mpagominimo / vm_mlimitecompra]
 
   # Aqui debe usted agregar sus propias nuevas variables
-
+ 
+  # Primera tanda
+  if( atributos_presentes(c("mcaja_ahorro", "mcuenta_corriente")))
+    dataset[,activos_cliente := mcaja_ahorro + mcuenta_corriente]
+  
+  # Segunda tanda
+  
+  if(atributos_presentes(c("ctarjeta_master_transacciones", 
+                           "ctarjeta_visa_transacciones")))
+    dataset[, comparacion_visa_mastercard := ctarjeta_visa_transacciones / ctarjeta_master_transacciones]
+  
+  if(atributos_presentes(c("mtarjeta_visa_consumo", "mtarjeta_master_consumo", 
+                           "ctarjeta_visa_transacciones", "ctarjeta_master_transacciones")))
+    dataset[, promedio_transacciones_credito := (mtarjeta_visa_consumo + mtarjeta_master_consumo) / 
+              (ctarjeta_visa_transacciones + ctarjeta_master_transacciones)]
+  
+  if(atributos_presentes(c("cliente_antiguedad", "cproductos")))
+    dataset[, adopcion_productos := cliente_antiguedad / cproductos]
+  
+  if(atributos_presentes(c("Master_msaldo_total", "Master_mlimitecompra")))
+    dataset[, saldo_master_credito := Master_msaldo_total / Master_mlimitecompra]
+  
+  if(atributos_presentes(c("Visa_msaldo_total", "Visa_mlimitecompra")))
+    dataset[, saldo_visa_credito := Visa_msaldo_total / Visa_mlimitecompra]
+  
+  if(atributos_presentes(c("Master_msaldo_total", "Visa_msaldo_total", "Master_mlimitecompra", "Visa_mlimitecompra")))
+    dataset[, saldo_total_tarjetas_credito := (Master_msaldo_total + Visa_msaldo_total) / 
+              (Master_mlimitecompra + Visa_mlimitecompra)]
+  
   # valvula de seguridad para evitar valores infinitos
   # paso los infinitos a NULOS
   infinitos <- lapply(
