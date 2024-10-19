@@ -16,7 +16,6 @@ gc(full = TRUE) # garbage collection
 
 require("data.table")
 require("yaml")
-require("lubridate")
 
 
 #cargo la libreria
@@ -210,207 +209,6 @@ AgregarVariables_IntraMes <- function(dataset) {
   
   # Aqui debe usted agregar sus propias nuevas variables
   
-  
-  
-  # Primera tanda
-  if( atributos_presentes(c("mcaja_ahorro", "mcuenta_corriente")))
-    dataset[,activos_cliente := mcaja_ahorro + mcuenta_corriente]
-  
-  # Segunda tanda
-  
-  if(atributos_presentes(c("ctarjeta_master_transacciones",
-                           "ctarjeta_visa_transacciones")))
-    dataset[, comparacion_visa_mastercard := ctarjeta_visa_transacciones / ctarjeta_master_transacciones]
-  
-  if(atributos_presentes(c("mtarjeta_visa_consumo", "mtarjeta_master_consumo",
-                           "ctarjeta_visa_transacciones", "ctarjeta_master_transacciones")))
-    dataset[, promedio_transacciones_credito := (mtarjeta_visa_consumo + mtarjeta_master_consumo) /
-              (ctarjeta_visa_transacciones + ctarjeta_master_transacciones)]
-  
-  if(atributos_presentes(c("cliente_antiguedad", "cproductos")))
-    dataset[, adopcion_productos := cliente_antiguedad / cproductos]
-  
-  if(atributos_presentes(c("Master_msaldo_total", "Master_mlimitecompra")))
-    dataset[, saldo_master_credito := Master_msaldo_total / Master_mlimitecompra]
-  
-  if(atributos_presentes(c("Visa_msaldo_total", "Visa_mlimitecompra")))
-    dataset[, saldo_visa_credito := Visa_msaldo_total / Visa_mlimitecompra]
-  
-  if(atributos_presentes(c("Master_msaldo_total", "Visa_msaldo_total", "Master_mlimitecompra", "Visa_mlimitecompra")))
-    dataset[, saldo_total_tarjetas_credito := (Master_msaldo_total + Visa_msaldo_total) /
-              (Master_mlimitecompra + Visa_mlimitecompra)]
-  
-  # Tercera tanda
-  
-  if(atributos_presentes(c("cproductos")))
-    dataset[, flag_cproductos := ifelse(cproductos > mean(cproductos),1,0)]
-  
-  if(atributos_presentes(c("cliente_antiguedad", "cproductos")))
-    dataset[, cproductos_vs_antiguedad := cproductos / cliente_antiguedad]
-  
-  if(atributos_presentes(c("ctarjeta_visa_transacciones")))
-    dataset[ ,flag_ctrans_visa := ifelse(ctarjeta_visa_transacciones > mean(ctarjeta_visa_transacciones),1,0)]
-  
-  if(atributos_presentes(c("ctarjeta_master_transacciones")))
-    dataset[ ,flag_ctrans_master := ifelse(ctarjeta_master_transacciones > mean(ctarjeta_master_transacciones),1,0)]
-  
-  if(atributos_presentes(c("cprestamos_personales")))
-    dataset[, flag_cprestamos_personales := ifelse(cprestamos_personales > 0, 1, 0)]
-  
-  if(atributos_presentes(c("cpayroll_trx")))
-    dataset[, flag_cpayroll_trx := ifelse(cpayroll_trx > 5, 1, 0)]
-  
-  # Cuarta tanda
-  
-  if(atributos_presentes(c("cliente_edad")))
-    dataset[, segmento_edad_joven := ifelse(cliente_edad <= 35, 1, 0)]
-  
-  if(atributos_presentes(c("cliente_edad")))
-    dataset[, segmento_edad_adulto := ifelse(cliente_edad > 35 & cliente_edad <= 60, 1, 0)]
-  
-  if(atributos_presentes(c("cliente_edad")))
-    dataset[, segmento_edad_senior := ifelse(cliente_edad >= 60, 1, 0)]
-  
-  if(atributos_presentes(c("Master_mpagominimo","Visa_mpagominimo","mpayroll")))
-    dataset[, responsabilidad_comprador := (Master_mpagominimo + Visa_mpagominimo) / (mpayroll)]
-  
-  if(atributos_presentes(c("Master_mconsumospesos","Visa_mconsumospesos","mpayroll")))
-    dataset[, responsabilidad_comprador2 := (Master_mconsumospesos + Visa_mconsumospesos) /  mpayroll ]
-  
-  if(atributos_presentes(c("ccomisiones_mantenimiento","ccomisiones_otras")))
-    dataset[, cantidad_total_comisiones := ccomisiones_mantenimiento + ccomisiones_otras]
-  
-  if(atributos_presentes(c("mcomisiones_mantenimiento","cproductos")))
-    dataset[, ratio_comisiones_productos := (mcomisiones_mantenimiento) / cproductos]
-  
-  # Quinta tanda
-  
-  
-  if(atributos_presentes(c("ctarjeta_visa","ctarjeta_master")))
-    dataset[,flag_tiene_tc := ifelse(ctarjeta_visa+ctarjeta_master>0,1,0)]
-  
-  if(atributos_presentes(c("Visa_status")))
-    dataset[,flag_estado_cuenta_visa_cerrada := ifelse(Visa_status == 9,1,0)]
-  
-  if(atributos_presentes(c("Visa_status")))  
-    dataset[, flag_estado_cuenta_visa_por_cerrar:= ifelse(Visa_status %in% c(6,7),1,0)]
-  
-  if(atributos_presentes(c("Visa_status")))    
-    dataset[, flag_estado_cuenta_visa_activa := ifelse(Visa_status == 0,1,0)]
-  
-  if(atributos_presentes(c("Visa_status")))
-    dataset[, flag_estado_cuenta_visa_proceso_cierre_y_cerradas := ifelse(Visa_status %in% c(6,7,9),1,0)]
-  
-  if(atributos_presentes(c("Visa_msaldototal","Visa_mconsumototal")))
-    dataset[, delta_saldo_total_visa := Visa_msaldototal - Visa_mconsumototal]
-  
-  if(atributos_presentes(c("Visa_msaldototal","Visa_mconsumototal")))
-    dataset[, delta_saldo_total_visa := Visa_msaldototal - Visa_mconsumototal]
-  
-  if(atributos_presentes(c('Master_msaldototal','Master_mconsumototal')))
-    dataset[, delta_saldo_total_master := (Master_msaldototal - Master_mconsumototal)]
-  
-  if(atributos_presentes(c('Master_status')))
-    dataset[, flag_estado_cuenta_master_proceso_cierre_y_cerradas := ifelse(Master_status %in% c(6,7,9),1,0)]
-  
-  if(atributos_presentes(c('Master_status')))
-    dataset[, flag_estado_cuenta_master_activa := ifelse(Master_status == 0,1,0)]
-  
-  if(atributos_presentes(c('Master_status')))
-    dataset[, flag_estado_cuenta_master_por_cerrar := ifelse(Master_status %in% c(6,7),1,0)]
-  
-  if(atributos_presentes(c('Master_status')))
-    dataset[, flag_estado_cuenta_master_cerrada := ifelse(Master_status == 9,1,0)]
-  
-  # Sexta tanda
-  
-  
-  if(atributos_presentes(c("vm_mlimitecompra")))
-    dataset[, ratio_limite_tc := vm_mlimitecompra / median(vm_mlimitecompra)]
-  if(atributos_presentes(c("cliente_edad", "cproductos")))
-    dataset[, edad_productos := cliente_edad / cproductos]
-  
-  if(atributos_presentes(c("mrentabilidad_annual", "cliente_antiguedad")))
-    dataset[, mrentabilidad_annual_vs_antiguedad := mrentabilidad_annual / cliente_antiguedad]
-  
-  if(atributos_presentes(c("mcaja_ahorro", "mactivos_margen")))
-    dataset[, proporcion_de_ahorro := mcaja_ahorro / mactivos_margen]
-  
-  if(atributos_presentes(c("mrentabilidad", "cliente_edad")))
-    dataset[, relacion_vs_edad := mrentabilidad / cliente_edad]
-  
-  if(atributos_presentes(c("mtarjeta_visa_debitos_automaticos", "cliente_antiguedad")))
-    dataset[, monto_debitos_automaticos_antiguedad := mtarjeta_visa_debitos_automaticos / cliente_antiguedad]
-  
-  if(atributos_presentes(c("mtransferencias_recibidas", "cliente_edad")))
-    dataset[, mtrasnferencias_recibidas_vs_edad := mtransferencias_recibidas / cliente_edad]
-  
-  if(atributos_presentes(c("mtarjeta_visa_debitos_automaticos", "Visa_mlimitecompra")))
-    dataset[, ratio_da_limite_visa := mtarjeta_visa_debitos_automaticos / Visa_mlimitecompra]
-  
-  if(atributos_presentes(c("mttarjeta_master_debitos_automaticos", "Master_mlimitecompra")))
-    dataset[, ratio_da_limite_master := mttarjeta_master_debitos_automaticos / Master_mlimitecompra]
-  
-  if(atributos_presentes(c("mtarjeta_visa_debitos_automaticos", "mttarjeta_master_debitos_automaticos","Visa_mlimitecompra","Master_mlimitecompra")))
-    dataset[, ratio_da_limite_vm := (mtarjeta_visa_debitos_automaticos + mttarjeta_master_debitos_automaticos) / (Visa_mlimitecompra + Master_mlimitecompra)]
-  
-  if(atributos_presentes(c("Visa_mpagominimo", "Visa_mlimitecompra")))
-    dataset[, ratio_minimo_pendiente_visa := Visa_mpagominimo / Visa_mlimitecompra]
-  
-  if(atributos_presentes(c("Master_mlimitecompra", "Visa_mlimitecompra")))
-    dataset[, comparacion_limitescompras_tarjetas := Master_mlimitecompra/Visa_mlimitecompra]
-  
-  if(atributos_presentes(c("mpayroll","Visa_mlimitecompra")))
-    dataset[, relacion_mpayroll_limitecompra_visa := (mpayroll)/Visa_mlimitecompra]
-  
-  if(atributos_presentes(c("mpayroll","Master_mlimitecompra")))
-    dataset[, relacion_mpayroll_limitecompra_master := (mpayroll)/Master_mlimitecompra]
-  
-  if(atributos_presentes(c("mtarjeta_visa_consumo", "Visa_mlimitecompra")))
-    dataset[, relacion_consumo_vs_limitecompra_visa := mtarjeta_visa_consumo/Visa_mlimitecompra]
-  
-  if(atributos_presentes(c("mtarjeta_master_consumo", "Master_mlimitecompra")))
-    dataset[, relacion_consumo_vs_limitecompra_master := mtarjeta_master_consumo/Master_mlimitecompra]
-  
-  if(atributos_presentes(c("Visa_mlimitecompra", "cliente_antiguedad")))
-    dataset[, relación_limitecompra_vs_antiguedad_visa := Visa_mlimitecompra/cliente_antiguedad]
-  
-  if(atributos_presentes(c("Master_mlimitecompra", "cliente_antiguedad")))
-    dataset[, relación_limitecompra_vs_antiguedad_master := Master_mlimitecompra/cliente_antiguedad]
-  
-  if(atributos_presentes(c("mtarjeta_visa_debitos_automaticos", "Visa_mlimitecompra")))
-    dataset[, relacion_mdebitautom_tcredito_vs_limitecompra_visa := mtarjeta_visa_debitos_automaticos/Visa_mlimitecompra]
-  
-  if(atributos_presentes(c("mtarjeta_master_debitos_automaticos", "Master_mlimitecompra")))
-    dataset[, relacion_mdebitautom_tcredito_vs_limitecompra_master := mtarjeta_master_debitos_automaticos/Master_mlimitecompra]
-  
-  if(atributos_presentes(c("Visa_mconsumototal","Visa_mlimitecompra")))
-    dataset[, relacion_consumos_vs_limitetarjeta_visa := Visa_mconsumototal/Visa_mlimitecompra]
-  
-  if(atributos_presentes(c("Master_mconsumototal","Master_mlimitecompra")))
-    dataset[, relacion_consumos_vs_limitetarjeta_master := Master_mconsumototal/Master_mlimitecompra]
-  
-  if(atributos_presentes(c("Master_mlimitecompra","Master_mfinanciacion_limite")))
-    dataset[, dif_limitecompra_limitefinancia_master := Master_mlimitecompra - Master_mfinanciacion_limite]
-  
-  if(atributos_presentes(c("Visa_mlimitecompra","Visa_mfinanciacion_limite")))
-    dataset[, dif_limitecompra_limitefinancia_visa := Visa_mlimitecompra - Visa_mfinanciacion_limite]
-  
-  if(atributos_presentes(c("Master_mfinanciacion_limite","Master_mlimitecompra")))
-    dataset[, ratio_mfinancion_limite_vs_limitecompra_master := Master_mfinanciacion_limite / Master_mlimitecompra]
-  
-  if(atributos_presentes(c("Visa_mfinanciacion_limite","Visa_mlimitecompra")))
-    dataset[, ratio_mfinancion_limite_vs_limitecompra_master := Visa_mfinanciacion_limite / Visa_mlimitecompra]
-  
-  if(atributos_presentes(c("Visa_mfinanciacion_limite","Visa_mlimitecompra","Master_mfinanciacion_limite","Master_mlimitecompra")))
-    dataset[, ratio_mfinancion_limite_vs_limitecompra_master := (Master_mfinanciacion_limite+Visa_mfinanciacion_limite)/(Master_mlimitecompra+Visa_mlimitecompra)]
-  
-  if(atributos_presentes(c("Visa_mpagominimo","Visa_mlimitecompra")))
-    dataset[, relacion_mpagomin_limitecompra_visa := Visa_mpagominimo/Visa_mlimitecompra ]
-  
-  if(atributos_presentes(c("Master_mpagominimo","Master_mlimitecompra")))
-    dataset[, relacion_mpagomin_limitecompra_master := Master_mpagominimo/Master_mlimitecompra ]
-  
   # valvula de seguridad para evitar valores infinitos
   # paso los infinitos a NULOS
   infinitos <- lapply(
@@ -444,39 +242,16 @@ AgregarVariables_IntraMes <- function(dataset) {
     )
     
     cat("Si no te gusta la decision, modifica a gusto el programa!\n\n")
-    dataset[mapply(is.nan, dataset)] <<- NA
+    dataset[mapply(is.nan, dataset)] <<- 0
   }
   
-  
-  # Aca agregamos los primeros 20 componentes principales que salen haciendo PCA
-  
-  
-  #cat("Aca empieza a correr PCA. Suerte.\n")
-  #datasetsinNA <- dataset
-  #datasetsinNA[is.na(datasetsinNA)] <- 0
-  #pca_datos <- prcomp(datasetsinNA,center=TRUE,scale=TRUE)
-  #rm(datasetsinNA) # borramos este dataset creado para ahorrar espacio
-  #autovec_pca <- as.data.table(pca_datos$x[,1:20])
-  #rm(pca_datos) # borramos para ahorrar espacio
-  ##dataset <-- dataset[, names(autovec_pca) := autovec_pca]
-  #dataset <<- cbind(dataset,autovec_pca)
-  #rm(autovec_pca) # borramos para ahorrar espacio
-  
-  #  cat("Si llegaste hasta aca es porque PCA no te hizo volar por los aires la corrida. Felicitaciones.\n")
-  
-  
-  
-  
-  
-  
   cat( "fin AgregarVariables_IntraMes()\n")
-  
 }
 #------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 # Aqui comienza el programa
-cat( "1301_FE_intrames_manual_008_corridaemi.r  START\n")
-action_inicializar()
+cat( "z1301_FE_intrames_manual.r  START\n")
+action_inicializar() 
 
 
 # cargo el dataset donde voy a entrenar
@@ -511,7 +286,7 @@ cat( "Finalizado grabado del dataset\n" )
 
 # copia la metadata sin modificar
 cat( "grabado de metadata\n")
-write_yaml( envg$PARAM$dataset_metadata,
+write_yaml( envg$PARAM$dataset_metadata, 
             file="dataset_metadata.yml" )
 
 #------------------------------------------------------------------------------
@@ -546,5 +321,5 @@ GrabarOutput()
 # finalizo la corrida
 #  archivos tiene a los files que debo verificar existen para no abortar
 
-action_finalizar( archivos = c("dataset.csv.gz","dataset_metadata.yml"))
-cat( "1301_FE_intrames_manual_008_corridaemi.r  END\n")
+action_finalizar( archivos = c("dataset.csv.gz","dataset_metadata.yml")) 
+cat( "z1301_FE_intrames_manual.r  END\n")
